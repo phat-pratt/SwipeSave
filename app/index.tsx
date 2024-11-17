@@ -8,6 +8,7 @@ import { getRequestPermissions } from '@/utils/photo';
 import { Photo } from '@/types/photo';
 import { Asset, deleteAssetsAsync, getAssetInfoAsync, getAssetsAsync, SortBy } from 'expo-media-library';
 import { DeletePreviewModal } from '../components/DeletePreviewModal';
+import { BlurredBackground } from '../components/BlurredBackground';
 
 const PhotoGallery = () => {
     const ref = useRef<SwiperCardRefType>();
@@ -121,6 +122,11 @@ const PhotoGallery = () => {
         setIsPreviewModalVisible(false);
     };
 
+    const nextPhotoUri = useMemo(() => {
+        const nextIndex = activeIndex + 1;
+        return nextIndex < photos.length ? photos[nextIndex].properUri : undefined;
+    }, [activeIndex, photos]);
+
     if (hasPermission === null) {
         return <View style={styles.container}><Text>Requesting permissions...</Text></View>;
     }
@@ -136,6 +142,7 @@ const PhotoGallery = () => {
 
     return (
         <View style={styles.container}>
+            <BlurredBackground imageUri={nextPhotoUri} />
             <GestureHandlerRootView style={styles.gestureRoot}>
                 {isLoading ? <ActivityIndicator size={'large'} color={'white'} style={styles.container} /> : <PhotoSwiper
                     photos={photos}
@@ -175,7 +182,6 @@ const styles = StyleSheet.create({
     },
     container: {
         flex: 1,
-        backgroundColor: '#000042',
     }
 });
 
