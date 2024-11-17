@@ -6,12 +6,18 @@ import { View, Image, StyleSheet, Text, TouchableWithoutFeedback, TouchableOpaci
 interface PhotoCardProps {
     photo: Photo;
     isMarkedForDeletion: boolean;
+    onUnmarkDelete?: () => void;
 }
 
-const DeleteOverlay = () => (
+const DeleteOverlay = ({ onUndo }: { onUndo?: () => void }) => (
     <View style={styles.deleteOverlay}>
         <MaterialCommunityIcons name="delete-clock" size={40} color="white" />
         <Text style={styles.deleteText}>Marked for deletion</Text>
+        {onUndo && (
+            <TouchableOpacity onPress={onUndo} style={styles.undoButton}>
+                <Text style={styles.undoText}>UNDO</Text>
+            </TouchableOpacity>
+        )}
     </View>
 );
 
@@ -24,7 +30,11 @@ const ActionOverlay = ({ onOpenPhoto }: { onOpenPhoto: () => void }) => (
     </View>
 );
 
-export const PhotoCard: React.FC<PhotoCardProps> = ({ photo, isMarkedForDeletion }) => {
+export const PhotoCard: React.FC<PhotoCardProps> = ({
+    photo,
+    isMarkedForDeletion,
+    onUnmarkDelete
+}) => {
     const [showActions, setShowActions] = useState(false);
 
     const openInPhotos = useCallback(() => {
@@ -49,7 +59,7 @@ export const PhotoCard: React.FC<PhotoCardProps> = ({ photo, isMarkedForDeletion
                     style={styles.image}
                     resizeMode="cover"
                 />
-                {isMarkedForDeletion && <DeleteOverlay />}
+                {isMarkedForDeletion && <DeleteOverlay onUndo={onUnmarkDelete} />}
                 {showActions && !isMarkedForDeletion && <ActionOverlay onOpenPhoto={openInPhotos} />}
             </View>
         </TouchableWithoutFeedback>
@@ -105,6 +115,18 @@ const styles = StyleSheet.create({
     actionText: {
         color: 'white',
         marginTop: 8,
+        fontSize: 14,
+        fontWeight: '600',
+    },
+    undoButton: {
+        backgroundColor: 'rgba(255, 255, 255, 0.2)',
+        paddingVertical: 8,
+        paddingHorizontal: 16,
+        borderRadius: 16,
+        marginTop: 12,
+    },
+    undoText: {
+        color: 'white',
         fontSize: 14,
         fontWeight: '600',
     },

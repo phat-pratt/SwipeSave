@@ -12,6 +12,7 @@ interface PhotoSwiperProps {
     onEndReached: () => void;
     deleteMap: Record<string, string>;
     onIndexChange: (index: number) => void;
+    onUnmarkDelete: (photoId: string) => void;
 }
 
 const DeleteOverlay = () => (
@@ -21,13 +22,14 @@ const DeleteOverlay = () => (
     </View>
 );
 
-export const PhotoSwiper: React.FC<PhotoSwiperProps> = ({ photos, onSwipeLeft, swiperRef, onEndReached, deleteMap, onIndexChange }) => {
-    const renderCard = useCallback((photo: Photo) => (
+export const PhotoSwiper: React.FC<PhotoSwiperProps> = ({ photos, onSwipeLeft, swiperRef, onEndReached, deleteMap, onIndexChange, onUnmarkDelete }) => {
+    const renderCard = useCallback((photo: Photo, index: number) => (
         <PhotoCard
             photo={photo}
             isMarkedForDeletion={!!deleteMap[photo.id]}
+            onUnmarkDelete={() => onUnmarkDelete(photo.id)}
         />
-    ), [deleteMap]);
+    ), [deleteMap, onUnmarkDelete]);
 
     const OverlayLabelRight = useCallback(() => (
         <View style={[styles.overlayLabelContainer, { backgroundColor: 'rgba(0, 255, 0, 0.2)' }]} />

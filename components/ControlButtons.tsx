@@ -10,6 +10,7 @@ interface ControlButtonsProps {
     onContinue: () => void;
     deleteCount: number;
     canGoBack: boolean;
+    onPreviewDelete: () => void;
 }
 
 export const ControlButtons: React.FC<ControlButtonsProps> = ({
@@ -19,6 +20,7 @@ export const ControlButtons: React.FC<ControlButtonsProps> = ({
     onContinue,
     deleteCount,
     canGoBack,
+    onPreviewDelete,
 }) => {
     return (
         <View style={styles.buttonsContainer}>
@@ -46,7 +48,7 @@ export const ControlButtons: React.FC<ControlButtonsProps> = ({
                     styles.roundButton,
                     deleteCount === 0 && styles.disabledButton
                 ]}
-                onPress={onDelete}
+                onPress={onPreviewDelete}
                 disabled={deleteCount === 0}
             >
                 <Badge count={deleteCount} />
