@@ -1,6 +1,6 @@
 import { Photo } from '@/types/photo';
-import React, { useState, useCallback } from 'react';
-import { View, Image, StyleSheet, TouchableWithoutFeedback, Linking } from 'react-native';
+import React, { useState } from 'react';
+import { View, Image, StyleSheet, TouchableWithoutFeedback } from 'react-native';
 import { DeleteOverlay, PhotoDetailsOverlay } from './overlays';
 
 interface PhotoCardProps {
@@ -15,13 +15,6 @@ export const PhotoCard: React.FC<PhotoCardProps> = ({
     onUnmarkDelete
 }) => {
     const [showActions, setShowActions] = useState(false);
-
-    const openInPhotos = useCallback(() => {
-        const photoURL = `photos-redirect://ph://${photo.id}`;
-        Linking.openURL(photoURL).catch(err => {
-            console.error('Error opening Photos app:', err);
-        });
-    }, [photo.id]);
 
     const toggleActions = () => {
         if (!isMarkedForDeletion) {

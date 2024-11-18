@@ -4,11 +4,12 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { type SwiperCardRefType } from 'rn-swiper-list';
 import { PhotoSwiper } from '../components/PhotoSwiper';
 import { ControlButtons } from '../components/ControlButtons';
-import { getRequestPermissions } from '@/utils/photo';
+import { getRequestPermissions, loadPhotoBatch } from '@/utils/photo';
 import { Photo } from '@/types/photo';
 import { Asset, deleteAssetsAsync, getAssetInfoAsync, getAssetsAsync, SortBy } from 'expo-media-library';
 import { DeletePreviewModal } from '../components/DeletePreviewModal';
 import { BlurredBackground } from '../components/BlurredBackground';
+import * as FileSystem from 'expo-file-system';
 
 const PhotoGallery = () => {
     const ref = useRef<SwiperCardRefType>();
@@ -29,28 +30,15 @@ const PhotoGallery = () => {
 
     const loadPhotos = async () => {
         if (!hasPermission) {
-            return
-        };
+            return;
+        }
         setIsLoading(true);
 
         try {
-            const { assets, hasNextPage, endCursor: nextEndCursor } = await getAssetsAsync({
-                after: endCursor,
-                mediaType: 'photo',
-                sortBy: [SortBy.creationTime]
-            });
-
+            const { photos: newPhotos, hasNextPage, endCursor: nextEndCursor } = await loadPhotoBatch(endCursor);
             setEndCursor(nextEndCursor);
             setHasMoreImages(hasNextPage);
-
-            const photosWithUri = await Promise.all(
-                assets.map(async (asset) => ({
-                    ...asset,
-                    properUri: await getPhotoUri(asset)
-                } as Photo))
-            );
-
-            setPhotos(photosWithUri);
+            setPhotos(newPhotos);
             setIsLoading(false);
         } catch (error) {
             console.error('Error loading photos:', error);
@@ -62,16 +50,6 @@ const PhotoGallery = () => {
             loadPhotos();
         }
     }
-
-    const getPhotoUri = async (asset: Asset) => {
-        try {
-            const assetInfo = await getAssetInfoAsync(asset);
-            return assetInfo.localUri || assetInfo.uri;
-        } catch (error) {
-            console.error('Error getting photo URI:', error);
-            return null;
-        }
-    };
 
     useEffect(() => {
         getPermissions();

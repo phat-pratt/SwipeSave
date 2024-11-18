@@ -28,6 +28,18 @@ export const PhotoDetailsOverlay: React.FC<Props> = ({ photo }) => {
         return `${minutes}:${seconds.toString().padStart(2, '0')}`;
     };
 
+    const formatFileSize = (bytes?: number) => {
+        if (!bytes) return 'Unknown';
+        const units = ['B', 'KB', 'MB', 'GB'];
+        let size = bytes;
+        let unitIndex = 0;
+        while (size >= 1024 && unitIndex < units.length - 1) {
+            size /= 1024;
+            unitIndex++;
+        }
+        return `${size.toFixed(1)} ${units[unitIndex]}`;
+    };
+
     return (
         <View style={styles.overlay}>
             <View style={styles.detailsContainer}>
@@ -59,6 +71,22 @@ export const PhotoDetailsOverlay: React.FC<Props> = ({ photo }) => {
                         <Ionicons name={photo.mediaType === 'video' ? 'videocam-outline' : 'image-outline'} size={24} color="white" />
                         <Text style={styles.detailText}>
                             {photo.mediaType.charAt(0).toUpperCase() + photo.mediaType.slice(1)}
+                        </Text>
+                    </View>
+                )}
+
+                <View style={styles.detailRow}>
+                    <Ionicons name="document-outline" size={24} color="white" />
+                    <Text style={styles.detailText}>
+                        {formatFileSize(photo.fileSize)}
+                    </Text>
+                </View>
+
+                {photo.fileType && (
+                    <View style={styles.detailRow}>
+                        <Ionicons name="code-outline" size={24} color="white" />
+                        <Text style={styles.detailText}>
+                            {photo.fileType.toUpperCase()}
                         </Text>
                     </View>
                 )}
