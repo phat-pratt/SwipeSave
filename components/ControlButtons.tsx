@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, TouchableOpacity, StyleSheet, Text } from 'react-native';
 import { AntDesign, Entypo, MaterialCommunityIcons } from '@expo/vector-icons';
 import { Badge } from './Badge';
 
@@ -11,6 +11,7 @@ interface ControlButtonsProps {
     deleteCount: number;
     canGoBack: boolean;
     onPreviewDelete: () => void;
+    totalSize?: string;
 }
 
 export const ControlButtons: React.FC<ControlButtonsProps> = ({
@@ -21,6 +22,7 @@ export const ControlButtons: React.FC<ControlButtonsProps> = ({
     deleteCount,
     canGoBack,
     onPreviewDelete,
+    totalSize,
 }) => {
     return (
         <View style={styles.buttonsContainer}>
@@ -30,7 +32,6 @@ export const ControlButtons: React.FC<ControlButtonsProps> = ({
             <TouchableOpacity
                 style={[
                     styles.button,
-                    styles.roundButton,
                     !canGoBack && styles.disabledButton
                 ]}
                 onPress={onGoBack}
@@ -45,18 +46,22 @@ export const ControlButtons: React.FC<ControlButtonsProps> = ({
             <TouchableOpacity
                 style={[
                     styles.button,
-                    styles.roundButton,
                     deleteCount === 0 && styles.disabledButton
                 ]}
                 onPress={onPreviewDelete}
                 disabled={deleteCount === 0}
             >
                 <Badge count={deleteCount} />
-                <MaterialCommunityIcons
-                    name="delete-clock-outline"
-                    size={24}
-                    color={deleteCount === 0 ? '#666666' : 'white'}
-                />
+                <View style={styles.deleteButtonContent}>
+                    <MaterialCommunityIcons
+                        name="delete-clock-outline"
+                        size={24}
+                        color={deleteCount === 0 ? '#666666' : 'white'}
+                    />
+                    {totalSize && deleteCount > 0 && (
+                        <Text style={styles.sizeText}>{totalSize}</Text>
+                    )}
+                </View>
             </TouchableOpacity>
             <TouchableOpacity style={styles.button} onPress={onContinue}>
                 <AntDesign name="arrowright" size={24} color="white" />
@@ -75,7 +80,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
     },
     button: {
-        height: 60,
+        height: 70,
         borderRadius: 40,
         aspectRatio: 1,
         backgroundColor: '#3A3D45',
@@ -89,12 +94,17 @@ const styles = StyleSheet.create({
             height: 4,
         },
     },
-    roundButton: {
-        height: 60,
-        width: 60,
-        borderRadius: 30,
-    },
     disabledButton: {
         opacity: 0.5,
+    },
+    deleteButtonContent: {
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    sizeText: {
+        color: 'white',
+        fontSize: 10,
+        marginTop: 2,
+        opacity: 0.8,
     },
 });

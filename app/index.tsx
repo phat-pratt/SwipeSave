@@ -4,8 +4,8 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { type SwiperCardRefType } from 'rn-swiper-list';
 import { PhotoSwiper } from '../components/PhotoSwiper';
 import { ControlButtons } from '../components/ControlButtons';
-import { getRequestPermissions, loadPhotoBatch } from '@/utils/photo';
-import { Photo } from '@/types/photo';
+import { getRequestPermissions, loadPhotoBatch, formatFileSize } from '@/utils/photo';
+import { Photo, DeleteMapEntry } from '@/types/photo';
 import { Asset, deleteAssetsAsync, getAssetInfoAsync, getAssetsAsync, SortBy } from 'expo-media-library';
 import { DeletePreviewModal } from '../components/DeletePreviewModal';
 import { BlurredBackground } from '../components/BlurredBackground';
@@ -18,7 +18,7 @@ const PhotoGallery = () => {
     const [photos, setPhotos] = useState<Photo[]>([]);
     const [hasMoreImages, setHasMoreImages] = useState<boolean>(true);
     const [isLoading, setIsLoading] = useState<boolean>(true);
-    const [deleteMap, setDeleteMap] = useState<Record<string, string>>({});
+    const [deleteMap, setDeleteMap] = useState<Record<string, DeleteMapEntry>>({});
     const [endCursor, setEndCursor] = useState<string | undefined>(undefined);
     const [hasPermission, setHasPermission] = useState<boolean | null>(null);
     const [isPreviewModalVisible, setIsPreviewModalVisible] = useState(false);
@@ -64,9 +64,17 @@ const PhotoGallery = () => {
     const deleteCount = useMemo(() => Object.keys(deleteMap).length, [deleteMap]);
 
     const onPrepareToDelete = async (cardIndex: number) => {
-        const assetId = photos[cardIndex].id;
-        if (!deleteMap[assetId]) {
-            setDeleteMap({ ...deleteMap, [assetId]: photos[cardIndex].properUri });
+        const photo = photos[cardIndex];
+        if (!deleteMap[photo.id]) {
+            setDeleteMap({
+                ...deleteMap,
+                [photo.id]: {
+                    uri: photo.properUri,
+                    fileSize: photo.fileSize,
+                    fileType: photo.fileType,
+                    creationTime: photo.creationTime
+                }
+            });
         }
     };
 
@@ -90,8 +98,12 @@ const PhotoGallery = () => {
     };
 
     const markedPhotos = useMemo(() =>
-        Object.entries(deleteMap).map(([id, uri]) => ({ id, uri })),
-        [deleteMap]
+        Object.entries(deleteMap).map(([id, entry]) => ({
+            id,
+            uri: entry.uri,
+            fileSize: entry.fileSize
+        })),
+        [deleteMap, photos]
     );
 
     const handleDeleteConfirm = async () => {
@@ -104,6 +116,11 @@ const PhotoGallery = () => {
         const nextIndex = activeIndex + 1;
         return nextIndex < photos.length ? photos[nextIndex].properUri : undefined;
     }, [activeIndex, photos]);
+
+    const totalSize = useMemo(() => {
+        const sum = Object.values(deleteMap).reduce((acc, entry) => acc + (entry.fileSize || 0), 0);
+        return formatFileSize(sum);
+    }, [deleteMap]);
 
     if (hasPermission === null) {
         return <View style={styles.container}><Text>Requesting permissions...</Text></View>;
@@ -139,12 +156,15 @@ const PhotoGallery = () => {
                     deleteCount={deleteCount}
                     canGoBack={activeIndex > 0}
                     onPreviewDelete={() => setIsPreviewModalVisible(true)}
+                    totalSize={totalSize}
                 />
                 <DeletePreviewModal
                     visible={isPreviewModalVisible}
                     onClose={() => setIsPreviewModalVisible(false)}
                     onConfirm={handleDeleteConfirm}
                     photos={markedPhotos}
+                    onUnmarkDelete={onUnmarkDelete}
+                    totalSize={totalSize}
                 />
             </GestureHandlerRootView>
         </View>

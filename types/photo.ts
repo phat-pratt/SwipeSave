@@ -5,3 +5,10 @@ export interface Photo extends Asset {
     fileSize?: number;
     fileType?: string;
 }
+
+export type DeleteMapEntry = {
+    uri: string;
+    fileSize?: number;
+    fileType?: string;
+    creationTime: number;
+};

@@ -1,4 +1,4 @@
-import { Photo } from '@/types/photo';
+import { DeleteMapEntry, Photo } from '@/types/photo';
 import React, { useCallback } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Swiper, type SwiperCardRefType } from 'rn-swiper-list';
@@ -10,7 +10,7 @@ interface PhotoSwiperProps {
     onSwipeLeft: (index: number) => void;
     swiperRef: React.RefObject<SwiperCardRefType>;
     onEndReached: () => void;
-    deleteMap: Record<string, string>;
+    deleteMap: Record<string, DeleteMapEntry>;
     onIndexChange: (index: number) => void;
     onUnmarkDelete: (photoId: string) => void;
 }
