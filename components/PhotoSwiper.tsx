@@ -66,11 +66,6 @@ const styles = StyleSheet.create({
         borderRadius: 15,
         marginVertical: 20,
     },
-    overlayLabelContainer: {
-        width: '100%',
-        height: '100%',
-        borderRadius: 15,
-    },
     deleteOverlay: {
         position: 'absolute',
         top: 0,
