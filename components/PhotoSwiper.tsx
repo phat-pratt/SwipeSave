@@ -1,9 +1,9 @@
 import { Photo } from '@/types/photo';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import React, { useCallback, useRef } from 'react';
-import { View, Image, StyleSheet, Text } from 'react-native';
+import React, { useCallback } from 'react';
+import { View, StyleSheet } from 'react-native';
 import { Swiper, type SwiperCardRefType } from 'rn-swiper-list';
 import { PhotoCard } from './PhotoCard';
+import { OverlayLabel, OverlayDirection } from './OverlayLabel';
 
 interface PhotoSwiperProps {
     photos: Photo[];
@@ -15,13 +15,6 @@ interface PhotoSwiperProps {
     onUnmarkDelete: (photoId: string) => void;
 }
 
-const DeleteOverlay = () => (
-    <View style={styles.deleteOverlay}>
-        <MaterialCommunityIcons name="delete-clock" size={40} color="white" />
-        <Text style={styles.deleteText}>Marked for deletion</Text>
-    </View>
-);
-
 export const PhotoSwiper: React.FC<PhotoSwiperProps> = ({ photos, onSwipeLeft, swiperRef, onEndReached, deleteMap, onIndexChange, onUnmarkDelete }) => {
     const renderCard = useCallback((photo: Photo, index: number) => (
         <PhotoCard
@@ -32,15 +25,15 @@ export const PhotoSwiper: React.FC<PhotoSwiperProps> = ({ photos, onSwipeLeft, s
     ), [deleteMap, onUnmarkDelete]);
 
     const OverlayLabelRight = useCallback(() => (
-        <View style={[styles.overlayLabelContainer, { backgroundColor: 'rgba(0, 255, 0, 0.2)' }]} />
+        <OverlayLabel direction={OverlayDirection.RIGHT} />
     ), []);
 
     const OverlayLabelLeft = useCallback(() => (
-        <View style={[styles.overlayLabelContainer, { backgroundColor: 'rgba(255, 0, 0, 0.2)' }]} />
+        <OverlayLabel direction={OverlayDirection.LEFT} />
     ), []);
 
     const OverlayLabelTop = useCallback(() => (
-        <View style={[styles.overlayLabelContainer, { backgroundColor: 'rgba(0, 0, 255, 0.2)' }]} />
+        <OverlayLabel direction={OverlayDirection.TOP} />
     ), []);
 
     return (
