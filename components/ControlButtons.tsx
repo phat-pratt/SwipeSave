@@ -1,11 +1,13 @@
 import React from 'react';
-import { View, TouchableOpacity, StyleSheet, Text } from 'react-native';
-import { AntDesign, Entypo, MaterialCommunityIcons } from '@expo/vector-icons';
+import { View, StyleSheet, Text } from 'react-native';
+import { AntDesign, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Colors } from '../constants/Colors';
+import { SIZES } from '../constants/theme';
 import { Badge } from './Badge';
+import { ControlButton } from './ControlButton';
 
-const ICON_SIZE = 30;
 
-interface ControlButtonsProps {
+export interface ControlButtonsProps {
     onSwipeLeft: () => void;
     onGoBack: () => void;
     onDelete: () => void;
@@ -19,64 +21,59 @@ interface ControlButtonsProps {
 export const ControlButtons: React.FC<ControlButtonsProps> = ({
     onSwipeLeft,
     onGoBack,
-    onDelete,
     onContinue,
     deleteCount,
     canGoBack,
     onPreviewDelete,
     totalSize,
 }) => {
-
-    const deleteDiabled = deleteCount === 0;
+    const isDeleteDisabled = deleteCount === 0;
 
     return (
-        <View style={styles.buttonsContainer}>
-            <TouchableOpacity style={[styles.button, styles.deleteButton]} onPress={onSwipeLeft}>
-                <MaterialCommunityIcons name="delete-sweep" size={ICON_SIZE} color="white" />
-            </TouchableOpacity>
-            <TouchableOpacity
-                style={[
-                    styles.button,
-                    !canGoBack && styles.disabledButton
-                ]}
-                onPress={onGoBack}
-                disabled={!canGoBack}
-            >
+        <View style={styles.container}>
+            <ControlButton onPress={onSwipeLeft} variant="delete">
+                <MaterialCommunityIcons
+                    name="delete-sweep"
+                    size={SIZES.icon}
+                    color={Colors.dark.text}
+                />
+            </ControlButton>
+
+            <ControlButton onPress={onGoBack} disabled={!canGoBack}>
                 <AntDesign
                     name="arrowleft"
-                    size={ICON_SIZE}
-                    color={!canGoBack ? '#666666' : 'white'}
+                    size={SIZES.icon}
+                    color={!canGoBack ? Colors.dark.button.disabled : Colors.dark.text}
                 />
-            </TouchableOpacity>
-            <TouchableOpacity
-                style={[
-                    styles.button,
-                    deleteDiabled && styles.disabledButton
-                ]}
-                onPress={onPreviewDelete}
-                disabled={deleteDiabled}
-            >
+            </ControlButton>
+
+            <ControlButton onPress={onPreviewDelete} disabled={isDeleteDisabled}>
                 <Badge count={deleteCount} />
                 <View style={styles.deleteButtonContent}>
                     <MaterialCommunityIcons
                         name="delete-clock-outline"
-                        size={deleteDiabled ? ICON_SIZE : 24}
-                        color={deleteDiabled ? '#666666' : 'white'}
+                        size={isDeleteDisabled ? SIZES.icon : 24}
+                        color={isDeleteDisabled ? Colors.dark.button.disabled : Colors.dark.text}
                     />
-                    {totalSize && !deleteDiabled && (
+                    {totalSize && !isDeleteDisabled && (
                         <Text style={styles.sizeText}>{totalSize}</Text>
                     )}
                 </View>
-            </TouchableOpacity>
-            <TouchableOpacity style={[styles.button, styles.continueButton]} onPress={onContinue}>
-                <AntDesign name="arrowright" size={ICON_SIZE} color="white" />
-            </TouchableOpacity>
+            </ControlButton>
+
+            <ControlButton onPress={onContinue} variant="continue">
+                <AntDesign
+                    name="arrowright"
+                    size={SIZES.icon}
+                    color={Colors.dark.text}
+                />
+            </ControlButton>
         </View>
     );
 };
 
 const styles = StyleSheet.create({
-    buttonsContainer: {
+    container: {
         flexDirection: 'row',
         bottom: 44,
         width: '100%',
@@ -84,37 +81,12 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-between',
     },
-    button: {
-        height: 80,
-        borderRadius: 40,
-        aspectRatio: 1,
-        backgroundColor: '#2A2D35', // Darker background color
-        elevation: 4,
-        justifyContent: 'center',
-        alignItems: 'center',
-        shadowColor: 'black',
-        shadowOpacity: 0.1,
-        shadowOffset: {
-            width: 0,
-            height: 4,
-        },
-        opacity: 0.85, // Added opacity to all buttons
-    },
-    deleteButton: {
-        backgroundColor: '#463235', // Subtle red tint
-    },
-    continueButton: {
-        backgroundColor: '#324535', // Subtle green tint
-    },
-    disabledButton: {
-        opacity: 0.5,
-    },
     deleteButtonContent: {
         alignItems: 'center',
         justifyContent: 'center',
     },
     sizeText: {
-        color: 'white',
+        color: Colors.dark.text,
         fontSize: 11,
         marginTop: 4,
         opacity: 0.8,
