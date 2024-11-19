@@ -2,7 +2,7 @@
 
 A modern, gesture-based photo management app that helps you organize and clean up your photo library with ease.
 
-![Demo for the photo delete app](./assets/gifs/test_gif.gif)
+<img src="./assets/gifs/test_gif.gif" alt="Alt Text" height="400" />
 
 ## Features
 
