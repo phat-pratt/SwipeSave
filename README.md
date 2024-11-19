@@ -11,7 +11,6 @@ A modern, gesture-based photo management app that helps you organize and clean u
 - File size tracking
 - Preview deleted items before confirmation
 - Intuitive UI with haptic feedback
-- Dark mode optimized
 
 ## Requirements
 
