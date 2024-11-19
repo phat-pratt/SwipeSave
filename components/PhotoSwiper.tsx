@@ -59,13 +59,10 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: 'red',
         alignItems: 'center',
-        // justifyContent: 'center',
     },
     cardStyle: {
         width: '95%',
         height: '90%',
-        // flex:1,
-        borderRadius: 15,
     },
     deleteOverlay: {
         position: 'absolute',

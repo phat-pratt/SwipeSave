@@ -1,17 +1,16 @@
-import React, { useRef, useState, useEffect, useMemo } from 'react';
-import { View, Text, Button, StyleSheet, Platform, Alert, ActivityIndicator, Image, SafeAreaView } from 'react-native';
+import React, { useRef, useState, useEffect, useMemo, useCallback } from 'react';
+import { View, Text, Button, StyleSheet, Platform, ActivityIndicator } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { type SwiperCardRefType } from 'rn-swiper-list';
-import { PhotoSwiper } from '../components/PhotoSwiper';
 import { ControlButtons } from '../components/ControlButtons';
 import { getRequestPermissions, loadPhotoBatch, formatFileSize } from '@/utils/photo';
 import { Photo, DeleteMapEntry } from '@/types/photo';
-import { Asset, deleteAssetsAsync, getAssetInfoAsync, getAssetsAsync, SortBy } from 'expo-media-library';
+import { deleteAssetsAsync } from 'expo-media-library';
 import { DeletePreviewModal } from '../components/DeletePreviewModal';
 import { BlurredBackground } from '../components/BlurredBackground';
-import * as FileSystem from 'expo-file-system';
+import { GalleryBody } from '../components/GalleryBody';
 
-const SWIPE_SAVE_LOGO = require('../assets/images/swipe_save.png');
+import { LogoHeader } from '../components/LogoHeader';
 
 const PhotoGallery = () => {
     const ref = useRef<SwiperCardRefType>();
@@ -143,22 +142,17 @@ const PhotoGallery = () => {
         <View style={[styles.container, styles.topSafeArea]}>
             <BlurredBackground imageUri={nextPhotoUri} />
             <GestureHandlerRootView style={styles.gestureRoot}>
-                <View style={styles.headerContainer}>
-                    <Image
-                        source={SWIPE_SAVE_LOGO}
-                        style={styles.headerImage}
-                        resizeMode="contain"
-                    />
-                </View>
-                {isLoading ? <ActivityIndicator size={'large'} color={'white'} style={styles.flex} /> : <PhotoSwiper
+                <LogoHeader />
+                <GalleryBody
+                    isLoading={isLoading}
                     photos={photos}
                     deleteMap={deleteMap}
-                    onSwipeLeft={onPrepareToDelete}
+                    onPrepareToDelete={onPrepareToDelete}
                     onEndReached={onEndReached}
                     swiperRef={ref}
                     onIndexChange={onIndexChange}
                     onUnmarkDelete={onUnmarkDelete}
-                />}
+                />
                 <ControlButtons
                     onSwipeLeft={() => ref.current?.swipeLeft()}
                     onGoBack={onGoBack}
@@ -195,13 +189,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#4C9085',
-    },
-    headerContainer: {
-        width: '100%',
-        alignItems: 'center',
-    },
-    headerImage: {
-        height: 80,
     },
     topSafeArea: {
         paddingTop: Platform.OS === 'ios' ? 47 : 0,
