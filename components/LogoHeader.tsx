@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { View, Image, StyleSheet } from 'react-native';
+import { View, Image, StyleSheet, Platform } from 'react-native';
 
 const SWIPE_SAVE_LOGO = require('../assets/images/swipe_save.png');
 
@@ -18,6 +18,7 @@ const styles = StyleSheet.create({
     headerContainer: {
         width: '100%',
         alignItems: 'center',
+        paddingTop: Platform.OS === 'ios' ? 47 : 0,
     },
     headerImage: {
         height: 80,

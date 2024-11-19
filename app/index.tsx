@@ -139,7 +139,7 @@ const PhotoGallery = () => {
     }
 
     return (
-        <View style={[styles.container, styles.topSafeArea]}>
+        <View style={[styles.container]}>
             <BlurredBackground imageUri={nextPhotoUri} />
             <GestureHandlerRootView style={styles.gestureRoot}>
                 <LogoHeader />
