@@ -1,4 +1,4 @@
-# Photo Deletrr
+# Swipe Save
 
 A modern, gesture-based photo management app that helps you organize and clean up your photo library with ease.
 
