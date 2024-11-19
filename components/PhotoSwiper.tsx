@@ -57,14 +57,15 @@ export const PhotoSwiper: React.FC<PhotoSwiperProps> = ({ photos, onSwipeLeft, s
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor: 'red',
         alignItems: 'center',
-        justifyContent: 'center',
+        // justifyContent: 'center',
     },
     cardStyle: {
         width: '95%',
-        height: '75%',
+        height: '90%',
+        // flex:1,
         borderRadius: 15,
-        marginVertical: 20,
     },
     deleteOverlay: {
         position: 'absolute',

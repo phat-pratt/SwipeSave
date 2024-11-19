@@ -1,20 +1,20 @@
 {
   "expo": {
-    "name": "photo-deletrr",
-    "slug": "photo-deletrr",
+    "name": "Swipe Save",
+    "slug": "swipe-saver",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
-    "scheme": "myapp",
+    "icon": "./assets/images/app_icon.png",
+    "scheme": "swipesave",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": false
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "##4C9085"
       }
     },
     "web": {
@@ -27,17 +27,17 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/splash-icon.png",
+          "image": "./assets/images/app_icon.png",
           "imageWidth": 200,
           "resizeMode": "contain",
-          "backgroundColor": "#ffffff"
+          "backgroundColor": "#4C9085"
         }
       ],
       [
         "expo-media-library",
         {
-          "photosPermission": "Allow $(PRODUCT_NAME) to access your photos.",
-          "savePhotosPermission": "Allow $(PRODUCT_NAME) to save photos.",
+          "photosPermission": "Allow Swipe Save to access your photos.",
+          "savePhotosPermission": "Allow Swipe Save to save photos.",
           "isAccessMediaLocationEnabled": true
         }
       ]

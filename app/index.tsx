@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect, useMemo } from 'react';
-import { View, Text, Button, StyleSheet, Platform, Alert, ActivityIndicator } from 'react-native';
+import { View, Text, Button, StyleSheet, Platform, Alert, ActivityIndicator, Image, SafeAreaView } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { type SwiperCardRefType } from 'rn-swiper-list';
 import { PhotoSwiper } from '../components/PhotoSwiper';
@@ -10,6 +10,8 @@ import { Asset, deleteAssetsAsync, getAssetInfoAsync, getAssetsAsync, SortBy } f
 import { DeletePreviewModal } from '../components/DeletePreviewModal';
 import { BlurredBackground } from '../components/BlurredBackground';
 import * as FileSystem from 'expo-file-system';
+
+const SWIPE_SAVE_LOGO = require('../assets/images/swipe_save.png');
 
 const PhotoGallery = () => {
     const ref = useRef<SwiperCardRefType>();
@@ -114,7 +116,9 @@ const PhotoGallery = () => {
 
     const nextPhotoUri = useMemo(() => {
         const nextIndex = activeIndex + 1;
-        return nextIndex < photos.length ? photos[nextIndex].properUri : undefined;
+        return nextIndex < photos.length
+            ? photos[nextIndex].properUri
+            : photos[activeIndex]?.properUri;
     }, [activeIndex, photos]);
 
     const totalSize = useMemo(() => {
@@ -123,12 +127,12 @@ const PhotoGallery = () => {
     }, [deleteMap]);
 
     if (hasPermission === null) {
-        return <View style={styles.container}><Text>Requesting permissions...</Text></View>;
+        return <View style={[styles.container, styles.topSafeArea]}><Text>Requesting permissions...</Text></View>;
     }
 
     if (hasPermission === false) {
         return (
-            <View style={styles.container}>
+            <View style={[styles.container, styles.topSafeArea]}>
                 <Text>No access to photos</Text>
                 <Button title="Request Permission" onPress={getPermissions} />
             </View>
@@ -136,10 +140,17 @@ const PhotoGallery = () => {
     }
 
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, styles.topSafeArea]}>
             <BlurredBackground imageUri={nextPhotoUri} />
             <GestureHandlerRootView style={styles.gestureRoot}>
-                {isLoading ? <ActivityIndicator size={'large'} color={'white'} style={styles.container} /> : <PhotoSwiper
+                <View style={styles.headerContainer}>
+                    <Image
+                        source={SWIPE_SAVE_LOGO}
+                        style={styles.headerImage}
+                        resizeMode="contain"
+                    />
+                </View>
+                {isLoading ? <ActivityIndicator size={'large'} color={'white'} style={styles.flex} /> : <PhotoSwiper
                     photos={photos}
                     deleteMap={deleteMap}
                     onSwipeLeft={onPrepareToDelete}
@@ -172,6 +183,9 @@ const PhotoGallery = () => {
 };
 
 const styles = StyleSheet.create({
+    flex: {
+        flex: 1
+    },
     gestureRoot: {
         flex: 1,
         alignItems: 'center',
@@ -180,7 +194,18 @@ const styles = StyleSheet.create({
     },
     container: {
         flex: 1,
-    }
+        backgroundColor: '#4C9085',
+    },
+    headerContainer: {
+        width: '100%',
+        alignItems: 'center',
+    },
+    headerImage: {
+        height: 80,
+    },
+    topSafeArea: {
+        paddingTop: Platform.OS === 'ios' ? 47 : 0,
+    },
 });
 
 export default PhotoGallery;

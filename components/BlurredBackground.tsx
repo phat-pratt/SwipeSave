@@ -1,6 +1,5 @@
-
 import React from 'react';
-import { StyleSheet, ImageBackground } from 'react-native';
+import { StyleSheet, Image } from 'react-native';
 import { BlurView } from 'expo-blur';
 
 type Props = {
@@ -8,26 +7,33 @@ type Props = {
 };
 
 export const BlurredBackground: React.FC<Props> = ({ imageUri }) => {
-    if (!imageUri) return null;
-
     return (
-        <ImageBackground
-            source={{ uri: imageUri }}
-            style={styles.background}
+        <BlurView
+            intensity={100}
+            style={styles.blurContainer}
         >
-            <BlurView intensity={80} style={styles.blur} />
-        </ImageBackground>
+            {imageUri && (
+                <Image
+                    source={{ uri: imageUri }}
+                    style={styles.backgroundImage}
+                    blurRadius={25}
+                />
+            )}
+        </BlurView>
     );
 };
 
 const styles = StyleSheet.create({
-    background: {
+    blurContainer: {
         position: 'absolute',
-        width: '100%',
-        height: '100%',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        zIndex: 0,
     },
-    blur: {
-        position: 'absolute',
+    backgroundImage: {
+        flex: 1,
         width: '100%',
         height: '100%',
     },
